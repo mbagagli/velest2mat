@@ -1,5 +1,4 @@
 # velest2mat
-============
 
 Collection of shell scripts and Matlab functions to plot VELEST v4.5 results. The software and relative references can be found in the aknowledgement section.
 
@@ -105,7 +104,7 @@ Better to be used with Windows 10 that comes with ubuntu-like shells utilities.
     |--- vel2mat.statcorr
     |--- figures/
             |--- VelestResult.pdf
-            |--- StationDelays.pdf
+            |--- StationCorr.pdf
 ```
 
 ### Aknowledgments
