@@ -2,7 +2,7 @@
 
 Collection of shell scripts and Matlab functions to plot VELEST v4.5 results. The software and relative references can be found in the aknowledgement section.
 
-**VERSION:** 1.0.5
+**VERSION:** 1.0.6
 
 **AUTHOR:**  Matteo Bagagli - <matteo.bagagli@erdw.ethz.ch> - [GitHub](https://github.com/billy4all)
 
@@ -17,7 +17,7 @@ Collection of shell scripts and Matlab functions to plot VELEST v4.5 results. Th
 Once cloned the repository, add the `./bash` sub-directory to your shell path. When Matlab is open add to path the folder `./matlab` recursively by typing:
 
 ```
->> addpath(genpath(pwd,'/velest2mat','/matlab']))
+>> addpath(genpath(strcat(pwd,'/velest2mat','/matlab')))
 
 ```
 ## Usage
