@@ -1,4 +1,4 @@
-function [ch,ah]=plotStatEpi(StatFile,varargin)
+function [ch,ah]=plotStatEpi(varargin)
 %% PLOTSTATEPI: function for plot Station // Epicenter data.
 %   Look into the function to see different plot possibilities.
 %   - 'Epi1',(str,[]) FileName of *.latlondepmag
@@ -22,6 +22,11 @@ function [ch,ah]=plotStatEpi(StatFile,varargin)
 %   - 'RefVsAll',(int,[])
 %        If not empty will plot the first nth events in a different
 %        color to mark them
+%   - 'PlotMap',(bool,[0])
+%       If not 0 a MAP with a specified SHAPEFILE will be plotted
+%   - 'ShapeFile',(str,[])
+%       If PlotMap is TRUE, then the given shapefile path will be used
+%
 %   Out:
 %   - ch: colorbar handle
 %   - ah: axis handle
@@ -49,6 +54,10 @@ function [ch,ah]=plotStatEpi(StatFile,varargin)
 
 %% INPUTS
 Def=struct( ...
+    'PlotMap', 0, ...
+    'ShapeFile', [], ... % FilePath - If user wants to plot NATIONAL BOUNDS    
+    'RefVsAll',[], ...     
+    'StatFile', [], ...
     'Epi1',[], ...
     'Epi2',[], ... % plotted only if ConnectEpi ON
     'Connect',0, ... % 0-1 True/False
@@ -56,8 +65,7 @@ Def=struct( ...
     'Caxis',[], ...
     'Factor',1, ... % Factor for increase/decrease scatterplot
     'ScaleBar',0, ...
-    'Region',[], ...
-    'RefVsAll',[] ... 
+    'Region',[] ...
     );
 Args=parseArgs(Def,varargin);
 %
@@ -66,14 +74,16 @@ if Args.Connect && isempty(Args.Epi2)
 end
 
 %% LOAD
-fid1=fopen(StatFile);
-STAT=textscan(fid1,'%s %f %f %*d %*d %*d %f %f %*d %*d'); % "%*f" --> skip a value
-fclose(fid1);
-
-statNAME=upper(STAT{1});
-statLAT=STAT{2};
-statLON=STAT{3};
-%%%%%
+if ~isempty(Args.StatFile)
+    fid1=fopen(StatFile);
+    STAT=textscan(fid1,'%s %f %f %*d %*d %*d %f %f %*d %*d'); % "%*f" --> skip a value
+    fclose(fid1);
+    
+    statNAME=upper(STAT{1});
+    statLAT=STAT{2};
+    statLON=STAT{3};    
+end
+%
 if ~isempty(Args.Epi1)
     fid2=fopen(Args.Epi1);
     EPI1=textscan(fid2,'%f %f %f %f'); % "%*f" --> skip a value
@@ -97,8 +107,38 @@ if ~isempty(Args.Epi2)
 end
 
 %% PLOT
-% ----------------------------------------------------------- Connect plot
+
 hold on % initialize plot and start to append layering
+
+% ----------------------------------------------- Geographical map
+
+% Region
+if ~isempty(Args.Region)
+    minLat=Args.Region(1,1);
+    maxLat=Args.Region(2,1);
+    minLon=Args.Region(1,2);
+    maxLon=Args.Region(2,2);
+else
+    % Taking into account the +/- degree for map selection
+    minLat=1;
+    maxLat=89;
+    minLon=-175;
+    maxLon=175;
+end
+
+if Args.PlotMap && ~isempty(Args.ShapeFile)
+    AlpArray_around = shaperead(Args.ShapeFile, ...
+                                'UseGeoCoords', true, ...
+                                'Selector',{@(v1,v2) (( v1>= minLon-5)&&( v1<= maxLon+5) && (v2 >= minLat-1) && (v2 <= maxLat+1)),'LON','LAT'}); % slezione nazioni (allargare per stare tranquilli che se cambio latlon di plot, le nazioni sono plottate)
+    set(gcf, 'Color', 'w');
+    worldmap([minLat maxLat],[minLon maxLon]);
+    geoshow(AlpArray_around,'FaceColor',[0.8 0.8 0.8],'EdgeColor',[0.5 0.5 0.5])
+elseif Args.PlotMap && isempty(Args.ShapeFile)
+    warning('PlotMap set to TRUE, but No SHAPEFILE specified ...')
+end
+
+% ----------------------------------------------- Connect plot
+
 if Args.Connect && ~isempty(Args.Epi1) && ~isempty(Args.Epi2)
     epi1h=plot(Epi1LON,Epi1LAT,'ok');
     epi2h=plot(Epi2LON,Epi2LAT,'+b');
@@ -106,52 +146,108 @@ if Args.Connect && ~isempty(Args.Epi1) && ~isempty(Args.Epi2)
     IN=[Epi2LON,Epi2LAT];
     legend([epi1h,epi2h],{'Epi1 file','Epi2 file'})
     for ii=1:size(IN,1)
-        plot([IN(ii,1);OUT(ii,1)],[IN(ii,2),OUT(ii,2)],'k');
-        if Args.NameEpi
-            if strcmpi(Args.NameEpi,'all')
-                text(IN(ii,1),IN(ii,2),num2str(ii),'HorizontalAlignment','center', ...
-                    'VerticalAlignment','bottom');
+        if ~Args.PlotMap 
+            plot([IN(ii,1);OUT(ii,1)],[IN(ii,2),OUT(ii,2)],'k');
+        else
+            plotm([IN(ii,2);OUT(ii,2)],[IN(ii,1),OUT(ii,1)],'k');
+        end
+        
+        if Args.NameEpi 
+            if ~Args.PlotMap
+                if strcmpi(Args.NameEpi,'all')
+                    text(IN(ii,1),IN(ii,2),num2str(ii),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');
+                else
+                    text(IN(Args.NameEpi,1),IN(Args.NameEpi,2),num2str(Args.NameEpi),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');                
+                end
             else
-                text(IN(Args.NameEpi,1),IN(Args.NameEpi,2),num2str(Args.NameEpi),'HorizontalAlignment','center', ...
-                    'VerticalAlignment','bottom');                
+                if strcmpi(Args.NameEpi,'all')
+                    textm(IN(ii,2),IN(ii,1),num2str(ii),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');
+                else
+                    textm(IN(Args.NameEpi,2),IN(Args.NameEpi,1),num2str(Args.NameEpi),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');     
+                end
             end
         end
     end
-    % ----------------------------------------------------------- Normal Plot
+    
+% ----------------------------------------------- Normal Plot
+    
 elseif ~Args.Connect && ~isempty(Args.Epi1) && isempty(Args.RefVsAll)
-    sh=scatter(Epi1LON,Epi1LAT,(Epi1MAG.^2)*Args.Factor,Epi1DEP,'filled'); % 3pt=magnitude 1 (sz= sqrt(num))
-    sh.MarkerEdgeColor='k';
+    
+    if ~Args.PlotMap 
+        sh=scatter(Epi1LON,Epi1LAT,(Epi1MAG.^2)*Args.Factor,Epi1DEP,'filled'); % 3pt=magnitude 1 (sz= sqrt(num))
+    else
+        sh=scatterm(Epi1LAT,Epi1LON,(Epi1MAG.^2)*Args.Factor,Epi1DEP,'filled','MarkerEdgeColor','k'); % 3pt=magnitude 1 (sz= sqrt(num))
+    end
+    
     if Args.NameEpi
-        if strcmpi(Args.NameEpi,'all')
-            for ii=1:length(Epi1LON)
-                text(Epi1LON(ii),Epi1LAT(ii),num2str(ii),'HorizontalAlignment','center', ...
-                    'VerticalAlignment','bottom');
+        if ~Args.PlotMap
+            if strcmpi(Args.NameEpi,'all')
+                for ii=1:length(Epi1LON)
+                    text(Epi1LON(ii),Epi1LAT(ii),num2str(ii),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');
+                end
+            else
+                for ii=1:length(Args.NameEpi)
+                    text(Epi1LON(Args.NameEpi(ii)),Epi1LAT(Args.NameEpi(ii)),num2str(Args.NameEpi(ii)),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');
+                end
             end
         else
-            for ii=1:length(Args.NameEpi)
-                text(Epi1LON(Args.NameEpi(ii)),Epi1LAT(Args.NameEpi(ii)),num2str(Args.NameEpi(ii)),'HorizontalAlignment','center', ...
-                    'VerticalAlignment','bottom');
-            end
+            if strcmpi(Args.NameEpi,'all')
+                for ii=1:length(Epi1LON)
+                    textm(Epi1LAT(ii),Epi1LON(ii),num2str(ii),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');
+                end
+            else
+                for ii=1:length(Args.NameEpi)
+                    textm(Epi1LAT(Args.NameEpi(ii)),Epi1LON(Args.NameEpi(ii)),num2str(Args.NameEpi(ii)),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');
+                end
+            end            
         end
     end
 elseif ~Args.Connect && ~isempty(Args.Epi1) && ~isempty(Args.RefVsAll)
-%     cptcmap('GMT_cool','nCol',70)
-    sh1=scatter(Epi1LON(1:Args.RefVsAll),Epi1LAT(1:Args.RefVsAll), ...
-        (Epi1MAG(1:Args.RefVsAll).^2)*Args.Factor,'b','filled'); % 3pt=magnitude 1 (sz= sqrt(num))
-    sh2=scatter(Epi1LON(Args.RefVsAll+1:end),Epi1LAT(Args.RefVsAll+1:end), ...
-        (Epi1MAG(Args.RefVsAll+1:end).^2)*Args.Factor,'w','filled'); % 3pt=magnitude 1 (sz= sqrt(num))
-    sh1.MarkerEdgeColor='k';
-    sh2.MarkerEdgeColor='k';
+    
+    if ~Args.PlotMap
+        sh1=scatter(Epi1LON(1:Args.RefVsAll),Epi1LAT(1:Args.RefVsAll), ...
+            (Epi1MAG(1:Args.RefVsAll).^2)*Args.Factor,'b','filled'); % 3pt=magnitude 1 (sz= sqrt(num))
+        sh2=scatter(Epi1LON(Args.RefVsAll+1:end),Epi1LAT(Args.RefVsAll+1:end), ...
+            (Epi1MAG(Args.RefVsAll+1:end).^2)*Args.Factor,'w','filled'); % 3pt=magnitude 1 (sz= sqrt(num))
+    else
+        sh1=scatterm(Epi1LAT(1:Args.RefVsAll),Epi1LON(1:Args.RefVsAll), ...
+            (Epi1MAG(1:Args.RefVsAll).^2)*Args.Factor,'b','filled','MarkerEdgeColor','k'); % 3pt=magnitude 1 (sz= sqrt(num))
+        sh2=scatterm(Epi1LAT(Args.RefVsAll+1:end),Epi1LON(Args.RefVsAll+1:end), ...
+            (Epi1MAG(Args.RefVsAll+1:end).^2)*Args.Factor,'w','filled','MarkerEdgeColor','k'); % 3pt=magnitude 1 (sz= sqrt(num))
+    end
+
     if Args.NameEpi
-        if strcmpi(Args.NameEpi,'all')
-            for ii=1:length(Epi1LON)
-                text(Epi1LON(ii),Epi1LAT(ii),num2str(ii),'HorizontalAlignment','center', ...
-                    'VerticalAlignment','bottom');
+        if ~Args.PlotMap
+            if strcmpi(Args.NameEpi,'all')
+                for ii=1:length(Epi1LON)
+                    text(Epi1LON(ii),Epi1LAT(ii),num2str(ii),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');
+                end
+            else
+                for ii=1:length(Args.NameEpi)
+                    text(Epi1LON(Args.NameEpi(ii)),Epi1LAT(Args.NameEpi(ii)),num2str(Args.NameEpi(ii)),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');
+                end
             end
         else
-            for ii=1:length(Args.NameEpi)
-                text(Epi1LON(Args.NameEpi(ii)),Epi1LAT(Args.NameEpi(ii)),num2str(Args.NameEpi(ii)),'HorizontalAlignment','center', ...
-                    'VerticalAlignment','bottom');
+            if strcmpi(Args.NameEpi,'all')
+                for ii=1:length(Epi1LON)
+                    textm(Epi1LAT(ii),Epi1LON(ii),num2str(ii),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');
+                end
+            else
+                for ii=1:length(Args.NameEpi)
+                    textm(Epi1LAT(Args.NameEpi(ii)),Epi1LON(Args.NameEpi(ii)),num2str(Args.NameEpi(ii)),'HorizontalAlignment','center', ...
+                        'VerticalAlignment','bottom');
+                end
             end
         end
     end
@@ -160,9 +256,19 @@ else
 end
 
 % Stations
-plot(statLON,statLAT,'^r','MarkerSize',12,'LineWidth',3)
-text(statLON,statLAT,statNAME,'HorizontalAlignment','center');
-grid on
+if ~isempty(Args.StatFile)
+    if ~Args.PlotMap
+        plot(statLON,statLAT,'^r','MarkerSize',12,'LineWidth',3)
+        text(statLON,statLAT,statNAME,'HorizontalAlignment','center');
+    else
+        plotm(statLAT,statLON,'^r','MarkerSize',12,'LineWidth',3)
+        textm(statLAT,statLON,statNAME,'HorizontalAlignment','center');
+    end
+end
+
+if ~Args.PlotMap
+    grid on
+end
 hold off
 
 %% DECORATOR

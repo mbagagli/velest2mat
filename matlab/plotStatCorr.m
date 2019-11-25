@@ -6,6 +6,8 @@ function []=plotStatCorr(FileName,varargin)
 %           - 'PlotStatName' (bool,[0]/1): to plot the STATION LABEL
 %           - 'Type' (str,['geom']/'color'): colormap or symbol size
 %           - 'Caxis' (float [-0.5 0.5]): interval for plotted values
+%           - 'PlotZeroCorr' (bool,0/[1]): will plot the STATIONS with 
+%                                          corrections equal to zero.
 %
 %   USAGE:  []=PLOTSTATCORR(FileName,['ArgsName',ARGSVALUE])
 %   AUTHOR: Matteo Bagagli @ ETH-Zurich
@@ -32,7 +34,8 @@ function []=plotStatCorr(FileName,varargin)
 Def=struct( ...
     'PlotStatName',0, ... %[0/1]
     'Type','geom', ... % 'geom'/'color'
-    'Caxis',[-0.5 0.5] ...
+    'Caxis',[-0.5 0.5], ...
+    'PlotZeroCorr', 1 ...
     );
 Args=parseArgs(Def,varargin);
 %
@@ -66,14 +69,22 @@ if strcmpi(Args.Type,'geom')
         hs_max=scatter(LON(idx_maj),LAT(idx_maj), ...
             PTCOR(idx_maj)*(2^10),'^r');
     end
-    if ~isempty(idx_zero)
+    if ~isempty(idx_zero) && Args.PlotZeroCorr
         hs_zero=plot(LON(idx_zero),LAT(idx_zero),'square','MarkerSize',10, ...
             'MarkerFaceColor',[0.9 0.9 0.9],'MarkerEdgeColor','k');
     end
     
-else strcmpi(Args.Type,'color')
+elseif strcmpi(Args.Type,'color')
     %%% SCATTER FUNCTION ---> by color
-    hs=scatter(LON,LAT,(2^8),PTCOR,'filled');
+    if ~Args.PlotZeroCorr
+       hs=scatter(LON(LON(:,1)~=0,:), ...
+                   LAT(LAT(:,1)~=0,:), ...
+                   (2^8), ...
+                   PTCOR,'filled');    
+    else
+       hs=scatter(LON,LAT,(2^8),PTCOR,'filled'); 
+    end
+
     hs.Marker='v';
     hs.MarkerEdgeColor='k';
     ch=colorbar('Units','normalized', ...
@@ -87,15 +98,19 @@ end
 %%% Names
 if Args.PlotStatName
     for ii=1:length(NAME)
-        text(LON(ii),LAT(ii),NAME{ii},'VerticalAlignment','top');
+        if ~Args.PlotZeroCorr && PCOR(ii)==0.0
+            continue
+        else
+            text(LON(ii),LAT(ii),NAME{ii},'VerticalAlignment','top');
+        end
     end
 end
 
 %% DECORATOR
 grid on; hold off  % axis IMAGE also fine
 axis equal
-set(gca,'xlim',[min(LON)-min(LON)*0.01 max(LON)+max(LON)*0.01], ...
-      'ylim',[min(LAT)-min(LAT)*0.001 max(LAT)+max(LAT)*0.001]);
+% set(gca,'xlim',[min(LON)-min(LON)*0.01 max(LON)+max(LON)*0.01], ...
+%       'ylim',[min(LAT)-min(LAT)*0.001 max(LAT)+max(LAT)*0.001]);
 xlabel('Longitude (Dec.Deg.)')
 ylabel('Latitude (Dec.Deg.)')
 end % End Main

@@ -1,5 +1,5 @@
 function [PlotFig1,PlotFig2]=velest2mat(varargin)                   
-%% VELEST2MAT (v1.0.5)
+%% VELEST2MAT (v1.1.0)
 %   Main function for creating an unique figure comprehensive
 %   of a VELEST v4.5 Run results. A GUI will appear and ask for the
 %   necessary files previously created with the 'velest2mat.sh' script.
@@ -33,7 +33,7 @@ function [PlotFig1,PlotFig2]=velest2mat(varargin)
 
 %% CHECKS + VARS
 if nargin~=4
-    error('USAGE: velest2mat(FIGTITLE,BOX_LOWLEFT,BOX_UPRIGHT,BOX_DEPTH,STATNUM)')
+    error('USAGE: velest2mat(FIGTITLE,BOX_LOWLEFT,BOX_UPRIGHT,BOX_DEPTH)')
 else
     Title=varargin{1};
     Origin=varargin{2};
@@ -43,19 +43,35 @@ end
 Factor=5; % Magnify Factor to plot events magnitude
 
 %% GUI for file selection
-[~,StatDelay,EpiFile_OUT,MOD_IN,MOD_OUT,HypoAdj,RMSFile]=myInputGUI( ...
+[~,StatDelay,EpiFile_OUT,MOD_IN,MOD_OUT,HypoAdj,RMSFile,SHPFile]=myInputGUI( ...
 {'Station Delay (*.statcorr)','Earthquake File (*.latlondepmag)','Vel. Model IN (*.mod)', ...
-'Vel. Model OUT (*.mod)','Hypocenter Corr. (*.HypoCorr)','Residual File (*.RMS)'}, ...
+'Vel. Model OUT (*.mod)','Hypocenter Corr. (*.HypoCorr)','Residual File (*.RMS)', ...
+'National Boundaries Shapefile. (*.shp)'}, ...
 'Title','PLOT VELEST: File Selection','StartDir',pwd,'Position',[0.1 0.1 0.3 0.5]);
+
+if (isempty(StatDelay) || isempty(EpiFile_OUT) || isempty(MOD_IN) || ...
+    isempty(MOD_OUT) || isempty(HypoAdj) || isempty(RMSFile))
+    % warning("Please FILL ALL the necessary field")
+    return
+end
 
 %% PLOTS
 PlotFig1=figure('Units','Normalized','Position',[0 0 1 1],'Name',Title);
 %
 ax1=subplot(4,4,[1,2,5,6]);
-plotStatEpi(StatDelay,'Epi1',EpiFile_OUT,'Factor',Factor,...
-            'ScaleBar',10);
-scatterLegend({'MAG','0.5','1.5','2.5'},[0.5,1.5,2.5],Factor,'ok');
-set(ax1,'xlim',[Origin(2) End(2)],'ylim',[Origin(1) End(1)])
+plotStatEpi('Epi1',EpiFile_OUT,'Factor',Factor, ...
+            'Region', [Origin; End], ...
+            'ScaleBar', 10, ...
+            'PlotMap', 1, ...
+            'ShapeFile', SHPFile);  % 'StatFile',StatDelay,
+% scatterLegend({'MAG','0.5','1.5','2.5'},[0.5,1.5,2.5],Factor,'ok');
+scatterLegend({'MAG','2','3','4'},[2,3,4],Factor,'ok');
+
+% Fix limit if NO MAP is given (otherwise is done inside plotStatEpi funct)
+if isempty(SHPFile)
+    set(ax1,'xlim',[Origin(2) End(2)],'ylim',[Origin(1) End(1)])
+end
+
 %
 ax2=subplot(4,4,[3,7]);
 plotDistHypo(EpiFile_OUT,'LAT','Region',[Origin(1),Origin(2);End(1),End(2)], ...

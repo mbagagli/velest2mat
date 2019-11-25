@@ -2,7 +2,7 @@
 
 Collection of shell scripts and Matlab functions to plot VELEST v4.5 results. The software and relative references can be found in the aknowledgement section.
 
-**VERSION:** 1.0.6
+**VERSION:** 1.1.0
 
 **AUTHOR:**  Matteo Bagagli - <matteo.bagagli@erdw.ethz.ch> - [GitHub](https://github.com/billy4all)
 
@@ -29,6 +29,8 @@ Before using matlab, the necessary files needs to be created beforehand with the
 $ velest2mat.sh -l VELEST_MAINLOG -c VELEST_OUTCNV -s VELEST_STATCORRECTION
 ```
 The flag variables are the relative or absolute path to the files you want to process. You can call the script with any combination of the 3 flags to receive  the needed output. The flag `-l VELEST_MAINLOG` calculate `vel2mat.HypoCorr` and `vel2mat.RMS`, the flag `-c VELEST_OUTCNV` calculate `vel2mat.latlondepmag`, the flag `-s VELEST_STATCORRECTION` calculate `vel2mat.statcorr`. The model files (input and output from VELEST `*.mod`), don't need any modification before he plotting routine call.
+
+The script will create a local folder `velest2mat_files` where all the created files will be stored.
 
 #### Matlab
 To see the necessary input arguments, type on prompt:

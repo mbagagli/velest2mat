@@ -28,22 +28,34 @@ if [ ! -n "${LOG}" -a ! -n "${CNV}" -a ! -n "${SCR}" ]; then
     exit
 fi
 
+# ------------------------------------------ Create project DIR
+if [[ ! -d velest2mat_files ]]; then
+  mkdir velest2mat_files
+else
+  echo "... overriding 'velest2mat_files' dir"
+  rm -r velest2mat_files
+  mkdir velest2mat_files
+fi
+
 # ------------------------------------------ Work on LOG
 if [ -n "${LOG}" ]; then
     ### Hypocenter Adjustment (t x y z)
     grep "A V E R A G E   of ADJUSTMENTS :" ${LOG} | \
-          awk '{print $11,$12,$13,$14}'> velest2mat.HypoCorr
+          awk '{print $11,$12,$13,$14}'> velest2mat_files/velest2mat.HypoCorr
 
     ### RMS
     # " Iteration nr*" # Results Line +1
     # "(Iteration nr*" # Occours if is a backup-run
-    awk '/ Iteration nr*/{getline; print $NF}' ${LOG} > velest2mat.RMS
+    awk '/ Iteration nr*/{getline; print $NF}' ${LOG} >\
+        velest2mat_files/velest2mat.RMS
 fi
+
 
 # ------------------------------------------ Work on CNV
 if [ -n "${CNV}" ]; then
     grep "EVID" ${CNV} | cut -c19- | \
-    awk '{print substr($1, 1, length($1)-1),substr($2, 1, length($2)-1),$3,$4}' > velest2mat.latlondepmag
+    awk '{print substr($1, 1, length($1)-1),substr($2, 1, length($2)-1),$3,$4}' >\
+        velest2mat_files/velest2mat.latlondepmag
 fi
 
 # ------------------------------------------ Work on STATCORR
@@ -60,7 +72,8 @@ if [ -n "${SCR}" ]; then
     if (substr($2,length($2),1)=="E") print "+"substr($2,1,length($2)-1)}' tmp.BODY > tmp.LON
     awk '{$1=$2=""; print $0}' tmp.BODY > tmp.REST
     #
-    paste -d " " tmp.STATION tmp.LAT tmp.LON tmp.REST > velest2mat.statcorr
+    paste -d " " tmp.STATION tmp.LAT tmp.LON tmp.REST >\
+        velest2mat_files/velest2mat.statcorr
 fi
 
 # ------------------------------------------ Netting
