@@ -1,0 +1,2 @@
+# Never push *.m~ files
+*.m~
