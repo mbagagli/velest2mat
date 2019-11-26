@@ -127,14 +127,14 @@ else
 end
 
 if Args.PlotMap && ~isempty(Args.ShapeFile)
-    AlpArray_around = shaperead(Args.ShapeFile, ...
-                                'UseGeoCoords', true, ...
-                                'Selector',{@(v1,v2) (( v1>= minLon-5)&&( v1<= maxLon+5) && (v2 >= minLat-1) && (v2 <= maxLat+1)),'LON','LAT'}); % slezione nazioni (allargare per stare tranquilli che se cambio latlon di plot, le nazioni sono plottate)
-    set(gcf, 'Color', 'w');
-    worldmap([minLat maxLat],[minLon maxLon]);
-    geoshow(AlpArray_around,'FaceColor',[0.8 0.8 0.8],'EdgeColor',[0.5 0.5 0.5])
+    Map_Around = shaperead(Args.ShapeFile, ...
+                           'UseGeoCoords', true, ...
+                           'Selector',{@(v1,v2) (( v1>= minLon-5)&&( v1<= maxLon+5) && (v2 >= minLat-1) && (v2 <= maxLat+1)),'LON','LAT'}); % slezione nazioni (allargare per stare tranquilli che se cambio latlon di plot, le nazioni sono plottate)
+    wh = worldmap([minLat maxLat],[minLon maxLon]);
+    setm(wh, 'ffacecolor', [204 255 255]/255);  % create background color    
+    geoshow(Map_Around,'FaceColor',[0.8 0.8 0.8],'EdgeColor',[0.5 0.5 0.5])
 elseif Args.PlotMap && isempty(Args.ShapeFile)
-    warning('PlotMap set to TRUE, but No SHAPEFILE specified ...')
+    error('PlotMap set to TRUE, but No SHAPEFILE specified ...')
 end
 
 % ----------------------------------------------- Connect plot
@@ -281,19 +281,29 @@ axis image
 
 % Plot Scale Matlab
 if Args.ScaleBar
-    PosX=get(gca,'xlim');
-    PosX=PosX(1)+((PosX(2)-PosX(1))*0.05);
-    PosY=get(gca,'ylim');
-    PosY=PosY(1)+((PosY(2)-PosY(1))*0.15);
-    addScaleMap(Args.ScaleBar,[PosX PosY]);
+    AxHandle=gca;
+    if ~Args.PlotMap
+        PosX=get(AxHandle,'xlim');
+        PosX=PosX(1)+((PosX(2)-PosX(1))*0.05);
+        PosY=get(AxHandle,'ylim');
+        PosY=PosY(1)+((PosY(2)-PosY(1))*0.15);
+        addScaleMap(AxHandle,Args.ScaleBar,[PosX PosY]); % v1.2.0
+    else
+        addScaleMap(AxHandle,Args.ScaleBar,[Args.Region(1,2)+1.5 ...
+                                            Args.Region(1,1)+1],1); % v1.2.0
+    end
 end
+
 % Legend
 if ~Args.Connect && isempty(Args.RefVsAll)
     ch=colorbar;
+    % --- Position [left, bottom, width, height]
+    % 'Position',[0.1 0.25 0.01 0.5]); % if single map
+    % 'Position',[0.1 0.63 0.01 0.2]); % if velest2mat   
     set(ch,'Units','normalized', ...
-        'Position',[0.155 0.80 0.013 0.07],'Location','westoutside');
+        'Location','NorthOutside');
         xlabel(ch,'Depth (km)');
-    set(ch,'Direction','reverse');
+    % set(ch,'Direction','reverse');
 else
     ch=[];
 end

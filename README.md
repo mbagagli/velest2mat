@@ -2,16 +2,11 @@
 
 Collection of shell scripts and Matlab functions to plot VELEST v4.5 results. The software and relative references can be found in the aknowledgement section.
 
-**VERSION:** 1.1.0
+**VERSION:** 1.2.0
 
 **AUTHOR:**  Matteo Bagagli - <matteo.bagagli@erdw.ethz.ch> - [GitHub](https://github.com/billy4all)
 
 **LICENSE:**  GNU-GPL v3
-
-## Prerequisites
-
-* MATLAB 9.0.0 R2016a or higher
-* GNU bash v3.2 or higher
 
 ## Getting Started
 Once cloned the repository, add the `./bash` sub-directory to your shell path. When Matlab is open add to path the folder `./matlab` recursively by typing:
@@ -67,11 +62,20 @@ Residual File (*RMS): 				velest2mat.RMS
   *** NB: For any question/doubt/suggestion/bug-report please, don't hesitate to contact me. Cheers...
 
 ------------
+
+## Prerequisites
+
+* MATLAB 9.0.0 R2016a or higher
+* GNU bash v3.2 or higher
+
 ### Tests
 
 * Tested on OSX El Capitan v10.11.6
 * Tested on Ubuntu 16.04 LTS 64-bit (will work with any Debian distr.)
-* There should be no problem to be run also on Windows SO with Matlab installed.
+* Tested on Ubuntu 18.04 LTS 64-bit (will work with any Debian distr.)
+* Tested on MATLAB 2016a/b 2017a/b 2018a/b 2019a/b
+
+There should be no problem to be run also on Windows SO with Matlab installed.
 Better to be used with Windows 10 that comes with ubuntu-like shells utilities.
 
 ### Filelist
@@ -109,6 +113,13 @@ Better to be used with Windows 10 that comes with ubuntu-like shells utilities.
             |--- StationCorr.pdf
 ```
 
+### Cite
+
+If you plan to use this package for your scientifi publication, please consider citing this repository as such:
+
+- _M. Bagagli (2017): Velest2Mat: utils collection to plot VELEST v4.5 results in MATLAB. (https://github.com/billy4all/velest2mat)_
+
+
 ### Aknowledgments
 * The test figures are saved with the _export_fig_ package available [here](https://it.mathworks.com/matlabcentral/fileexchange/23629-export-fig).
 
@@ -116,3 +127,5 @@ Better to be used with Windows 10 that comes with ubuntu-like shells utilities.
 To know more about VELEST software:
 
 * Kissling, E., Ellsworth, W.L., Eberhart‐Phillips, D. and Kradolfer, U., 1994. Initial reference models in local earthquake tomography. Journal of Geophysical Research: Solid Earth, 99(B10), pp.19635-19646.
+
+
