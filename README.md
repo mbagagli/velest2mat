@@ -77,6 +77,7 @@ Residual File (*RMS): 				velest2mat.RMS
 
 There should be no problem to be run also on Windows SO with Matlab installed.
 Better to be used with Windows 10 that comes with ubuntu-like shells utilities.
+Let m
 
 ### Filelist
 
@@ -127,5 +128,8 @@ If you plan to use this package for your scientifi publication, please consider 
 To know more about VELEST software:
 
 * Kissling, E., Ellsworth, W.L., Eberhart‐Phillips, D. and Kradolfer, U., 1994. Initial reference models in local earthquake tomography. Journal of Geophysical Research: Solid Earth, 99(B10), pp.19635-19646.
+
+For any bug reports/ issues send an e-mail to:
+_matteo.bagagli@erdw.ethz.ch_
 
 
