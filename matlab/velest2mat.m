@@ -57,6 +57,7 @@ end
 
 %% PLOTS
 PlotFig1=figure('Units','Normalized','Position',[0 0 1 1],'Name',Title);
+set(PlotFig1, 'Color', 'w');
 %
 ax1=subplot(4,4,[1,2,5,6]);
 plotStatEpi('Epi1',EpiFile_OUT,'Factor',Factor, ...
@@ -64,8 +65,6 @@ plotStatEpi('Epi1',EpiFile_OUT,'Factor',Factor, ...
             'ScaleBar', 200, ...
             'PlotMap', ~isempty(SHPFile), ...
             'ShapeFile', SHPFile);  % 'StatFile',StatDelay,
-% scatterLegend({'MAG','0.5','1.5','2.5'},[0.5,1.5,2.5],Factor,'ok');
-scatterLegend({'MAG','2','3','4'},[2,3,4],Factor,'ok');
 
 % Fix limit if NO MAP is given (otherwise is done inside plotStatEpi funct)
 if isempty(SHPFile)
@@ -87,7 +86,7 @@ set(ax3,'xlabel',[])
 %
 ax4=subplot(4,4,[4,8,12]);
 [~,hl_3,~]=plotVelMod({MOD_IN,MOD_OUT}, ...
-    'Depth',Depth,'LineSpecList',{':k','-k'});
+    'Depth',Depth,'LineSpecList',{'-b','-k'});
 set(ax4,'yaxislocation','right')
 
 ax4_pos = ax4.Position;
@@ -118,10 +117,11 @@ PlotFig2=figure;
 
 if isempty(SHPFile)
     plotStatCorr(StatDelay,'PlotStatName',0, ...
-                 'Type','color','PlotZeroCorr',0)
+                 'Type','color','PlotZeroCorr',0)                 
 else          
     plotStatCorr(StatDelay,'PlotStatName',0, ...
-                 'Type','color','PlotZeroCorr',0, ...
+                 'Type','geom','PlotZeroCorr',0, ...
+                 'Factor', 30, ...
                  'Region', [Origin; End], ...
                  'PlotMap', 1, 'ScaleBar', 200, 'ShapeFile', SHPFile); %v1.2.0
 end

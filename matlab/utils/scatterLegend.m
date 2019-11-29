@@ -27,7 +27,7 @@ function [hleg,hobj]=scatterLegend(TextCell,SizeDim,Factor,LinSpec)
 %                10,10,10];
 % 
 %             sh=scatter(A(:,1),A(:,2),(A(:,3).^2)*Factor,'ok');
-%             scattersize==MarkerSize*sqrt(Factor)pt)
+%             %scattersize==MarkerSize*sqrt(Factor)pt)
 %             leg=SCATTERLEGEND({'SIZE','1','2','3','4','5', ...
 %                 '6','7','8','9','10'},[1:1:10],Factor,'ok');
 %             leg.Location='NorthWest'; axis([0,11,0,11])
@@ -75,7 +75,7 @@ hobj(1).FontSize=11;
 hobj(length(TextCell)+2).Marker='none';
 % Body
 for ii=1:length(idx)
-    hobj(idx(ii)).MarkerSize=SizeDim(ii)*sqrt(Factor);
+    hobj(idx(ii)).MarkerSize=SizeDim(ii)*sqrt(Factor); 
 end
 %
 hleg.Location='northwest';

@@ -32,7 +32,7 @@ function [ch,ah]=plotStatEpi(varargin)
 %   - ah: axis handle
 %
 %   USAGE: PLOTSTATEPI(StatFile, ...)
-%   AUTHOR: Matte Bagagli @ ETH-Zurich 0916
+%   AUTHOR: Matteo Bagagli @ ETH-Zurich 0916
 %
 
 %    VELEST2MAT: collection of bash-script/Matlab functions for 
@@ -294,6 +294,12 @@ if Args.ScaleBar
     end
 end
 
+% ColorMap
+cptcmap('GMT_hot', 'mapping', 'scaled','flip',true);
+if ~isempty(Args.Caxis)
+    caxis(Args.Caxis)
+end
+
 % Legend
 if ~Args.Connect && isempty(Args.RefVsAll)
     ch=colorbar;
@@ -307,10 +313,10 @@ if ~Args.Connect && isempty(Args.RefVsAll)
 else
     ch=[];
 end
-%
-if ~isempty(Args.Caxis)
-    caxis(Args.Caxis)
-end
+
+% Magnitude Legend
+scatterLegend({'MAG','2','3','4'},[2,3,4],Args.Factor,'ok');
+
 %
 xlabel('Longitude (Dec.Deg.)')
 ylabel('Latitude (Dec.Deg.)')
