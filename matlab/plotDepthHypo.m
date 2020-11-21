@@ -69,7 +69,7 @@ end
 hs=[];
 for ii=1:iter
     h=stairs(MOD_plot{ii}(:,1),MOD_plot{ii}(:,2), ...
-        colors{ii},'DisplayName',cellName{ii});
+        colors{ii},'DisplayName',cellName{ii},'LineWidth',1.3);
     hs=[hs,h];
 end
 xlim([Args.MinDepth Args.MaxDepth])

@@ -51,7 +51,7 @@ Factor=5; % Magnify Factor to plot events magnitude
 
 if (isempty(StatDelay) || isempty(EpiFile_OUT) || isempty(MOD_IN) || ...
     isempty(MOD_OUT) || isempty(HypoAdj) || isempty(RMSFile))
-    % warning("Please FILL ALL the necessary field")
+    warning("Please FILL ALL the necessary field")
     return
 end
 

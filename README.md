@@ -2,7 +2,7 @@
 
 Collection of shell scripts and Matlab functions to plot VELEST v4.5 results. The software and relative references can be found in the aknowledgement section.
 
-**VERSION:** 1.2.0
+**VERSION:** 1.2.2
 
 **AUTHOR:**  Matteo Bagagli - <matteo.bagagli@erdw.ethz.ch> - [GitHub](https://github.com/billy4all)
 
