@@ -13,7 +13,7 @@ function [MOD_mat,hl,legendName]=plotVelMod(cellName,varargin)
 %   AUTHOR: Matteo Bagagli @ ETH-Zurich 0916
 %
 
-%    VELEST2MAT: collection of bash-script/Matlab functions for 
+%    VELEST2MAT: collection of bash-script/Matlab functions for
 %                plotting VELEST v4.5 results.
 %    Copyright (C) 2018  Matteo Bagagli
 %
@@ -103,5 +103,5 @@ end
 % legend(hl,legendName,'Location','northeast')
 % legend('off')
 % legend('show')
-% 
+%
 end % End Main
