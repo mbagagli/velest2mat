@@ -1,10 +1,12 @@
+[![DOI](https://zenodo.org/badge/132815372.svg)](https://zenodo.org/badge/latestdoi/132815372) [![View velest2mat on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://ch.mathworks.com/matlabcentral/fileexchange/67283-velest2mat)
+
 # velest2mat
 
 Collection of shell scripts and Matlab functions to plot VELEST v4.5 results. The software and relative references can be found in the aknowledgement section.
 
 **VERSION:** 1.2.3
 
-**AUTHOR:**  Matteo Bagagli - <matteo.bagagli@erdw.ethz.ch> - [GitHub](https://github.com/billy4all)
+**AUTHOR:**  Matteo Bagagli - <matteo.bagagli@erdw.ethz.ch> - [GitHub](https://github.com/mbagagli)
 
 **LICENSE:**  GNU-GPL v3
 
@@ -47,19 +49,31 @@ Hypocenter Corr. (*HypoCorr): 		velest2mat.HypoCorr
 Residual File (*RMS): 				velest2mat.RMS
 ```
 
-  If some warning appears is are because of special characters contained in
-  the station's name. This is absolutely irrelevant for the figure itself, so
-  don't worry.
+If some warnings appears are because of special characters contained in
+the station's name. This is absolutely irrelevant for the figure itself, so
+don't worry.
 
+These plot are meant to give an indication of the goodness/badness of the
+VELEST run, but a more accurate look to the main and auxiliary logs should be
+given in any case. I will try to maintain and update these tools (i.e. applying
+backward compatibility for older MATLAB's version, improving the mapping
+procedure etc...), but feel free to modify them as you want.
 
+### Citing
+If you plan to use this package for your scientifi publication, please **consider citing this repository** with the provided [DOI](doi.org/10.5281/zenodo.4292676):
 
-  These plot are meant to give an indication of the goodness/badness of the
-  VELEST run, but a more accurate look to the main and auxiliary logs should be
-  given in any case. I will try to maintain and update these tools (i.e. applying
-  backward compatibility for older MATLAB's version, improving the mapping
-  procedure etc...), but feel free to modify them as you want.
-
-  *** NB: For any question/doubt/suggestion/bug-report please, don't hesitate to contact me. Cheers...
+```
+@misc{mbagagli_2020_132815372,
+    author       = {Matteo Bagagli},
+    title        = {velest2mat: collection of routines for VELEST software analysis},
+    month        = Nov,
+    year         = 2020,
+    doi          = {doi.org/10.5281/zenodo.4292676},
+    version      = {v1.2.3},
+    publisher    = {Zenodo},
+    url          = {https://zenodo.org/record/4292676}
+    }
+```
 
 ------------
 
@@ -71,9 +85,10 @@ Residual File (*RMS): 				velest2mat.RMS
 ### Tests
 
 * Tested on OSX El Capitan v10.11.6
+* Tested on OSX El Capitan v11.0.1
 * Tested on Ubuntu 16.04 LTS 64-bit (will work with any Debian distr.)
 * Tested on Ubuntu 18.04 LTS 64-bit (will work with any Debian distr.)
-* Tested on MATLAB 2016a/b 2017a/b 2018a/b 2019a/b
+* Tested on MATLAB 2016a/b 2017a/b 2018a/b 2019a/b 2020b
 
 There should be no problem to be run also on Windows SO with Matlab installed.
 Better to be used with Windows 10 that comes with ubuntu-like shells utilities.
@@ -113,15 +128,6 @@ Better to be used with Windows 10 that comes with ubuntu-like shells utilities.
             |--- StationCorr.pdf
 ```
 
-### Cite
-
-
-
-If you plan to use this package for your scientifi publication, please consider citing this repository as such:
-
-- _M. Bagagli (2017): Velest2Mat: utils collection to plot VELEST v4.5 results in MATLAB. (https://github.com/billy4all/velest2mat)_
-
-
 ### Aknowledgments
 * The test figures are saved with the _export_fig_ package available [here](https://it.mathworks.com/matlabcentral/fileexchange/23629-export-fig).
 
@@ -132,6 +138,3 @@ To know more about VELEST software:
 
 For any bug reports/ issues send an e-mail to:
 _matteo.bagagli@erdw.ethz.ch_
-
-
-[![View velest2mat on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://ch.mathworks.com/matlabcentral/fileexchange/67283-velest2mat)
