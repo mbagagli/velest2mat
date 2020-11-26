@@ -6,10 +6,8 @@
 # AUTHOR: Matteo Bagagli @ ETH-Zurich
 
 if [ "$#" -lt 1 ]; then
- cat << EOF
-USAGE: velest2mat.sh -l LOG -c CNV -s STATCORR
-EOF
- exit
+  echo "USAGE: $(basename $0) -l LOG -c CNV -s STATCORR"
+  exit
 fi
 
 # ------------------------------------------ Grep args and Checks
@@ -51,7 +49,6 @@ if [ -n "${LOG}" ]; then
       velest2mat_files/velest2mat.RMS
 fi
 
-
 # ------------------------------------------ Work on CNV
 if [ -n "${CNV}" ]; then
   grep "EVID" ${CNV} | cut -c19- | \
@@ -79,4 +76,4 @@ fi
 
 # ------------------------------------------ Netting
 rm tmp*
-echo "... DONE"
+echo "DONE"

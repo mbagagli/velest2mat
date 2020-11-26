@@ -2,7 +2,7 @@
 
 Collection of shell scripts and Matlab functions to plot VELEST v4.5 results. The software and relative references can be found in the aknowledgement section.
 
-**VERSION:** 1.2.2
+**VERSION:** 1.2.3
 
 **AUTHOR:**  Matteo Bagagli - <matteo.bagagli@erdw.ethz.ch> - [GitHub](https://github.com/billy4all)
 
@@ -77,7 +77,6 @@ Residual File (*RMS): 				velest2mat.RMS
 
 There should be no problem to be run also on Windows SO with Matlab installed.
 Better to be used with Windows 10 that comes with ubuntu-like shells utilities.
-Let m
 
 ### Filelist
 
@@ -101,7 +100,7 @@ Let m
             |--- isanycell.m
             |--- myInputGUI.m
             |--- parseArgs.m
-            |--- scatterLegend.m 
+            |--- scatterLegend.m
 ```
 ```
 ./testfiles/
